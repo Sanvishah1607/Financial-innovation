@@ -87,71 +87,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Product Preview Card */}
-      <section className="relative max-w-5xl mx-auto">
-        <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg overflow-hidden p-6 sm:p-8">
-          <div className="flex items-center justify-between pb-6 border-b border-[#F0F0F0] flex-wrap gap-4">
-            <div>
-              <span className="text-xs font-bold uppercase text-[#8B1E3F] tracking-wider">
-                FinShield Live Banking Preview
-              </span>
-              <h3 className="text-xl font-bold text-[#242424] mt-0.5">
-                Financial Health & Safety Overview
-              </h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 bg-[#EAF5EC] text-[#218739] text-xs font-bold px-2.5 py-1 rounded">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Zero Bank Password Required
-              </span>
-            </div>
-          </div>
 
-          {/* Metric Preview Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-6">
-            <div className="p-4 bg-[#F7F7F8] rounded-md border border-[#E5E5E5]">
-              <span className="text-[11px] font-bold text-[#6B6B6B] uppercase">Total Income</span>
-              <div className="text-xl font-black text-[#242424] mt-1">₹45,000</div>
-              <span className="text-[10px] text-[#218739] font-semibold mt-0.5 block">↑ Internship Stipend</span>
-            </div>
-            <div className="p-4 bg-[#F7F7F8] rounded-md border border-[#E5E5E5]">
-              <span className="text-[11px] font-bold text-[#6B6B6B] uppercase">Total Expenses</span>
-              <div className="text-xl font-black text-[#242424] mt-1">₹27,450</div>
-              <span className="text-[10px] text-[#6B6B6B] mt-0.5 block">60.9% of Income</span>
-            </div>
-            <div className="p-4 bg-[#F7F7F8] rounded-md border border-[#E5E5E5]">
-              <span className="text-[11px] font-bold text-[#6B6B6B] uppercase">Current Balance</span>
-              <div className="text-xl font-black text-[#8B1E3F] mt-1">₹17,550</div>
-              <span className="text-[10px] text-[#218739] font-semibold mt-0.5 block">Available Liquid</span>
-            </div>
-            <div className="p-4 bg-[#F7F7F8] rounded-md border border-[#E5E5E5]">
-              <span className="text-[11px] font-bold text-[#6B6B6B] uppercase">Savings Rate</span>
-              <div className="text-xl font-black text-[#218739] mt-1">39%</div>
-              <span className="text-[10px] text-[#218739] font-semibold mt-0.5 block">Above 20% Goal</span>
-            </div>
-          </div>
-
-          {/* Banner inside preview */}
-          <div className="bg-[#F8E9EE] border border-[#E9C8D4] p-4 rounded-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <ShieldAlert className="w-5 h-5 text-[#8B1E3F] flex-shrink-0" />
-              <div>
-                <h4 className="text-xs font-bold text-[#64152E]">
-                  Digital ScamShield Guard Active
-                </h4>
-                <p className="text-xs text-[#6B6B6B]">
-                  Scans suspicious SMS/UPI messages for urgency hooks, fake lottery rewards, and reverse QR traps.
-                </p>
-              </div>
-            </div>
-            <Link to="/scam-checker">
-              <Button size="sm" variant="outline">
-                Try Scanner
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Feature Grid */}
       <section className="max-w-6xl mx-auto">
