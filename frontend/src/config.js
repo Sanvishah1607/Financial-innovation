@@ -10,7 +10,8 @@ export const GOOGLE_OAUTH_CONFIG = {
 };
 
 export const AI_ADVISOR_CONFIG = {
-  // Optional: If you want to use OpenAI or Google Gemini directly in frontend:
+  // NVIDIA NIM (Llama 3 / Mistral / DeepSeek), Google Gemini, or OpenAI:
+  nvidiaApiKey: import.meta.env.VITE_NVIDIA_API_KEY || '',
   geminiApiKey: import.meta.env.VITE_GEMINI_API_KEY || '',
   openaiApiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
 };

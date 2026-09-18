@@ -105,6 +105,14 @@ class AuthResponse(BaseModel):
     message: Optional[str] = None
     error: Optional[str] = None
 
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    reply: str
+    safe_daily_spend: float
+    micro_nudge: str
+
 # ==========================================
 # 3. HELPER BUSINESS LOGIC
 # ==========================================

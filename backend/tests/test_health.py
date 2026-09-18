@@ -1,33 +1,58 @@
 # Automated Health & Core Endpoint Tests
-# Authored by Sanvi for FinGuard Backend
+# FinGuard Backend - Phase 1: Backend Foundation
 
 from fastapi.testclient import TestClient
-from main import app
+import pytest
 
-client = TestClient(app)
+
+def test_application_import():
+    """Verify application imports successfully and has required attributes."""
+    from app.main import app
+    assert app is not None
+    assert app.title == "FinShield API"
 
 
 def test_root_endpoint():
-    """Verify root endpoint returns welcome message."""
+    """Verify GET / returns HTTP 200 with message confirming FinShield backend is running."""
+    from app.main import app
+    client = TestClient(app)
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to FinTech Core API"}
+    data = response.json()
+    assert "FinShield" in data["message"]
+    assert data["status"] == "running"
+    assert data["app_name"] == "FinShield API"
 
 
 def test_health_check_endpoint():
-    """Verify health check returns healthy status."""
+    """Verify GET /health returns HTTP 200 with status, app name, and health metadata."""
+    from app.main import app
+    client = TestClient(app)
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert data["service"] == "fintech-backend"
+    assert data["app_name"] == "FinShield API"
+    assert data["service"] == "finshield-backend"
+    assert "version" in data
+    assert "environment" in data
 
 
-def test_dashboard_api():
-    """Verify /api/dashboard returns financial metrics and recent transactions."""
-    response = client.get("/api/dashboard")
+def test_api_v1_health_check_endpoint():
+    """Verify GET /api/v1/health returns HTTP 200 for versioned health route."""
+    from app.main import app
+    client = TestClient(app)
+    response = client.get("/api/v1/health")
     assert response.status_code == 200
     data = response.json()
-    assert "checking_balance" in data
-    assert "vault_savings" in data
-    assert "budget_breakdown" in data
+    assert data["status"] == "healthy"
+    assert data["app_name"] == "FinShield API"
+
+
+def test_nonexistent_route_returns_404():
+    """Verify invalid routes return 404 status code."""
+    from app.main import app
+    client = TestClient(app)
+    response = client.get("/non-existent-endpoint")
+    assert response.status_code == 404
+
