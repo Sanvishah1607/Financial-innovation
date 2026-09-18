@@ -5,6 +5,7 @@ import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react'
 interface ToastContextType {
   toasts: Toast[];
   showToast: (message: string, type?: Toast['type'], duration?: number) => void;
+  addToast: (type: Toast['type'], message: string, duration?: number) => void;
   removeToast: (id: string) => void;
 }
 
@@ -30,8 +31,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     }
   }, [removeToast]);
 
+  const addToast = useCallback((type: Toast['type'] = 'success', message: string, duration = 4000) => {
+    showToast(message, type, duration);
+  }, [showToast]);
+
   return (
-    <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
+    <ToastContext.Provider value={{ toasts, showToast, addToast, removeToast }}>
       {children}
       {/* Toast Render Container */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0">
@@ -75,3 +80,5 @@ export function useToast() {
   }
   return context;
 }
+
+export default ToastContext;

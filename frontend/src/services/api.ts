@@ -63,6 +63,31 @@ export async function registerUser(userData: Partial<UserProfile> & { password: 
   return response.json();
 }
 
+export async function googleSignIn(googleData?: { name?: string; email?: string; picture?: string; credential?: string }): Promise<{ success: boolean; user?: UserProfile; token?: string; error?: string }> {
+  if (USE_MOCK_DATA) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const fullName = googleData?.name || 'Aarav Sharma';
+    const firstName = fullName.split(' ')[0] || 'User';
+    const email = googleData?.email || 'aarav.google@gmail.com';
+    const googleUser: UserProfile = {
+      ...initialMockUser,
+      fullName,
+      firstName,
+      email,
+      avatarUrl: googleData?.picture || 'https://lh3.googleusercontent.com/a/default-user',
+      authProvider: 'google',
+    };
+    return { success: true, user: googleUser, token: 'google_oauth_jwt_finshield' };
+  }
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/google`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(googleData || {}),
+  });
+  return response.json();
+}
+
 export async function getUserProfile(): Promise<UserProfile> {
   if (USE_MOCK_DATA) {
     return initialMockUser;

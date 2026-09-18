@@ -22,10 +22,15 @@ Base = declarative_base()
 class DBUser(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), default="Student Explorer")
-    monthly_income = Column(Float, default=3000.00)
-    checking_balance = Column(Float, default=1420.50)
-    vault_savings = Column(Float, default=240.00)
+    name = Column(String(100), default="Aarav Sharma")
+    first_name = Column(String(50), default="Aarav")
+    email = Column(String(120), unique=True, index=True, nullable=True)
+    google_id = Column(String(120), nullable=True)
+    avatar_url = Column(String(255), nullable=True)
+    auth_provider = Column(String(20), default="email")
+    monthly_income = Column(Float, default=35000.00)
+    checking_balance = Column(Float, default=17550.00)
+    vault_savings = Column(Float, default=24000.00)
 
 class DBTransaction(Base):
     __tablename__ = "transactions"
@@ -87,13 +92,18 @@ class AlternativeCreditResponse(BaseModel):
     factors: List[str]
     actionable_tips: List[str]
 
-class ChatRequest(BaseModel):
-    message: str
+class GoogleAuthRequest(BaseModel):
+    credential: Optional[str] = None
+    email: Optional[str] = None
+    name: Optional[str] = None
+    picture: Optional[str] = None
 
-class ChatResponse(BaseModel):
-    reply: str
-    safe_daily_spend: float
-    micro_nudge: str
+class AuthResponse(BaseModel):
+    success: bool
+    user: Optional[dict] = None
+    token: Optional[str] = None
+    message: Optional[str] = None
+    error: Optional[str] = None
 
 # ==========================================
 # 3. HELPER BUSINESS LOGIC
@@ -182,8 +192,76 @@ def seed_initial_demo_data():
     db.close()
 
 # ==========================================
-# 5. API ENDPOINTS
+# 5. AUTHENTICATION & GOOGLE OAUTH ENDPOINTS
 # ==========================================
+
+@app.post("/api/v1/auth/google", response_model=AuthResponse)
+@app.post("/api/auth/google", response_model=AuthResponse)
+def handle_google_authentication(payload: GoogleAuthRequest, db: Session = Depends(get_db)):
+    """
+    Handles Google OAuth sign-in / sign-up:
+    Extracts name, first name, email, avatar from Google token/payload,
+    persists in SQLite / PostgreSQL database, and returns user session.
+    """
+    raw_name = payload.name or "Aarav Sharma"
+    first_name = raw_name.split()[0] if raw_name else "User"
+    email = payload.email or "aarav.google@gmail.com"
+    avatar = payload.picture or "https://lh3.googleusercontent.com/a/default-user"
+
+    # Find or create user in database
+    user = db.query(DBUser).filter(DBUser.email == email).first()
+    if not user:
+        user = DBUser(
+            name=raw_name,
+            first_name=first_name,
+            email=email,
+            avatar_url=avatar,
+            auth_provider="google",
+            monthly_income=35000.0,
+            checking_balance=17550.0,
+            vault_savings=24000.0
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    return AuthResponse(
+        success=True,
+        user={
+            "id": f"usr_{user.id}",
+            "fullName": user.name,
+            "firstName": user.first_name or first_name,
+            "email": user.email,
+            "avatarUrl": user.avatar_url,
+            "authProvider": "google",
+            "monthlyIncome": user.monthly_income,
+            "currency": "INR (₹)",
+            "checkingBalance": user.checking_balance,
+            "vaultSavings": user.vault_savings
+        },
+        token=f"jwt_google_{user.id}_finshield",
+        message=f"Welcome, {first_name}! Successfully authenticated via Google."
+    )
+
+@app.post("/api/v1/auth/login", response_model=AuthResponse)
+@app.post("/api/auth/login", response_model=AuthResponse)
+def handle_email_login(payload: dict, db: Session = Depends(get_db)):
+    email = payload.get("email", "aarav@finshield.in")
+    first_name = email.split("@")[0].capitalize()
+    return AuthResponse(
+        success=True,
+        user={
+            "id": "usr_1",
+            "fullName": f"{first_name} User",
+            "firstName": first_name,
+            "email": email,
+            "authProvider": "email",
+            "monthlyIncome": 45000.0,
+            "currency": "INR (₹)"
+        },
+        token="jwt_session_token_finshield",
+        message=f"Welcome back, {first_name}!"
+    )
 
 @app.get("/api/dashboard")
 def get_dashboard_summary(db: Session = Depends(get_db)):

@@ -56,8 +56,11 @@ export interface SavingsGoal {
 export interface UserProfile {
   id: string;
   fullName: string;
+  firstName?: string;
   email: string;
   phone: string;
+  avatarUrl?: string;
+  authProvider?: 'email' | 'google';
   monthlyIncome: number;
   currency: string;
   accountNumberMasked: string;

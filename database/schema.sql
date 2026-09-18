@@ -8,12 +8,18 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. Profiles Table (Future User Metadata)
--- TODO: Connect with Supabase Auth auth.users
+-- 1. Profiles Table (User Metadata & Google OAuth)
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) UNIQUE,
+    email VARCHAR(255) UNIQUE NOT NULL,
     full_name VARCHAR(150),
+    first_name VARCHAR(75),
+    last_name VARCHAR(75),
+    avatar_url TEXT,
+    auth_provider VARCHAR(20) DEFAULT 'email', -- 'email' or 'google'
+    google_id VARCHAR(150) UNIQUE,
+    monthly_income NUMERIC(10, 2) DEFAULT 35000.00,
+    currency VARCHAR(10) DEFAULT 'INR (₹)',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
