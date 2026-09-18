@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.session import engine, Base
+import app.models.financial  # Ensure all SQLAlchemy models are registered
 from app.api.router import api_router
 from app.schemas.common import RootResponse, HealthResponse
 
