@@ -43,8 +43,7 @@ pnpm-debug.log*
 !.env.example
 
 # IDE & Operating System
-.DS_Store
-.idea/
-.vscode/
-*.swp
-*.swo
+# Archives and SQLite
+*.zip
+*.db
+*.sqlite3
