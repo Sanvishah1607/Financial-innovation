@@ -9,19 +9,19 @@ def test_application_import():
     """Verify application imports successfully and has required attributes."""
     from app.main import app
     assert app is not None
-    assert app.title == "FinShield API"
+    assert app.title == "FinGuard API"
 
 
 def test_root_endpoint():
-    """Verify GET / returns HTTP 200 with message confirming FinShield backend is running."""
+    """Verify GET / returns HTTP 200 with message confirming FinGuard backend is running."""
     from app.main import app
     client = TestClient(app)
     response = client.get("/")
     assert response.status_code == 200
     data = response.json()
-    assert "FinShield" in data["message"]
+    assert "FinGuard" in data["message"]
     assert data["status"] == "running"
-    assert data["app_name"] == "FinShield API"
+    assert data["app_name"] == "FinGuard API"
 
 
 def test_health_check_endpoint():
@@ -32,8 +32,8 @@ def test_health_check_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert data["app_name"] == "FinShield API"
-    assert data["service"] == "finshield-backend"
+    assert data["app_name"] == "FinGuard API"
+    assert data["service"] == "finguard-backend"
     assert "version" in data
     assert "environment" in data
 
@@ -46,7 +46,7 @@ def test_api_v1_health_check_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert data["app_name"] == "FinShield API"
+    assert data["app_name"] == "FinGuard API"
 
 
 def test_nonexistent_route_returns_404():

@@ -16,7 +16,7 @@ class HealthResponse(BaseModel):
 class RootResponse(BaseModel):
     message: str
     status: str = "running"
-    app_name: str = "FinShield API"
+    app_name: str = "FinGuard API"
 
 
 class PlaceholderResponse(BaseModel):

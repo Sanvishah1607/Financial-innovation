@@ -6,8 +6,8 @@ from typing import List, Optional
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "FinShield API"
-    PROJECT_DESCRIPTION: str = "FinShield — AI-Powered Financial Safety & Decision Intelligence Platform"
+    PROJECT_NAME: str = "FinGuard API"
+    PROJECT_DESCRIPTION: str = "FinGuard — Smart Personal Finance & Secure Digital Transactions Backend API"
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True

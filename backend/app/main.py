@@ -79,9 +79,9 @@ app.include_router(api_router)
 # Root Endpoint
 @app.get("/", response_model=RootResponse, tags=["Root"], status_code=status.HTTP_200_OK)
 def root():
-    """Root endpoint welcoming users and confirming that FinShield backend is running."""
+    """Root endpoint welcoming users and confirming that FinGuard backend is running."""
     return {
-        "message": "Welcome to FinShield API — Backend is running successfully",
+        "message": "Welcome to FinGuard API — Backend is running successfully",
         "status": "running",
         "app_name": settings.PROJECT_NAME,
     }
@@ -94,7 +94,7 @@ def health_check():
     return {
         "status": "healthy",
         "app_name": settings.PROJECT_NAME,
-        "service": "finshield-backend",
+        "service": "finguard-backend",
         "version": settings.VERSION,
         "environment": settings.ENVIRONMENT,
     }
