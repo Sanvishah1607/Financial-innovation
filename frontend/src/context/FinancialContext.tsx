@@ -22,6 +22,7 @@ interface FinancialContextType {
   addSavingsGoal: (goal: Omit<SavingsGoal, 'id'>) => void;
   updateSavingsGoal: (id: string, amountToAdd: number) => void;
   updateProfile: (updated: Partial<UserProfile>) => void;
+  updateUser: (updated: Partial<UserProfile>) => void;
 }
 
 const FinancialContext = createContext<FinancialContextType | undefined>(undefined);
@@ -140,6 +141,10 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     showToast('Profile details updated successfully.', 'success');
   };
 
+  const updateUser = (updated: Partial<UserProfile>) => {
+    setUser((prev) => ({ ...prev, ...updated }));
+  };
+
   return (
     <FinancialContext.Provider
       value={{
@@ -158,6 +163,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
         addSavingsGoal,
         updateSavingsGoal,
         updateProfile,
+        updateUser,
       }}
     >
       {children}
