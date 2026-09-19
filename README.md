@@ -4,15 +4,7 @@
 
 ---
 
-## 👥 Team & Roles
-
-* **Neev**: Backend & API Development (FastAPI, Route Handlers, Schemas)
-* **Sanvi**: Backend & Database Integration (Supabase PostgreSQL, Pytest)
-* **Dhanvi**: Frontend Development (React, Vite, UI Components)
-
----
-
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -26,7 +18,7 @@
 
 ---
 
-## 📁 Project Structure Overview
+##  Project Structure Overview
 
 ```text
 FinGuard/
@@ -60,7 +52,7 @@ FinGuard/
 
 ## 🚀 Quickstart Guide
 
-### 1. Run the Backend API (Neev & Sanvi)
+### 1. Run the Backend API
 ```bash
 cd backend
 python3 -m venv venv
@@ -74,7 +66,7 @@ uvicorn app.main:app --reload --port 8000
 * **Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
 * **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 2. Run the Frontend App (Dhanvi)
+### 2. Run the Frontend App
 ```bash
 cd frontend
 npm install
