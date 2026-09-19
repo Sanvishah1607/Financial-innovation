@@ -24,3 +24,15 @@
     background: #9CA3AF;
   }
 }
+
+/* Native Android/iOS safe-area adjustments */
+.is-capacitor header {
+  padding-top: max(2.25rem, env(safe-area-inset-top, 2.25rem)) !important;
+  height: auto !important;
+  min-height: 4.75rem;
+}
+
+.is-capacitor .capacitor-bottom-safe {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 1.25rem)) !important;
+}
+

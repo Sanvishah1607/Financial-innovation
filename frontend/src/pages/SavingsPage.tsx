@@ -19,6 +19,7 @@ import Input from '../components/Input';
 import Select from '../components/Select';
 import Badge from '../components/Badge';
 import Modal from '../components/Modal';
+import EmptyState from '../components/EmptyState';
 import { SavingsGoal } from '../types';
 
 export const SavingsPage: React.FC = () => {
@@ -171,91 +172,102 @@ export const SavingsPage: React.FC = () => {
           <span className="text-xs text-[#6B6B6B]">{savingsGoals.length} active goals</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {savingsGoals.map(goal => {
-            const pct = Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100));
-            const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
-            const monthsLeft = calculateMonthsLeft(goal.targetDate);
-            const monthlyRequired = Math.round(remaining / monthsLeft);
-            const isCompleted = pct >= 100;
+        {savingsGoals.length === 0 ? (
+          <div className="py-8">
+            <EmptyState
+              title="No Active Savings Goals"
+              description="You haven't set up any savings targets yet. Create a purpose-driven goal to begin tracking your deposits and milestone progress."
+              actionLabel="Create Your First Goal"
+              onAction={() => setIsAddModalOpen(true)}
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {savingsGoals.map((goal) => {
+              const pct = Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100));
+              const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
+              const monthsLeft = calculateMonthsLeft(goal.targetDate);
+              const monthlyRequired = Math.round(remaining / monthsLeft);
+              const isCompleted = pct >= 100;
 
-            return (
-              <Card
-                key={goal.id}
-                className="p-5 bg-white border border-[#E5E5E5] hover:border-[#8B1E3F] hover:shadow-cardHover transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div>
-                      <Badge variant="neutral">{goal.category || 'Personal Goal'}</Badge>
-                      <h3 className="text-base font-bold text-[#242424] mt-1.5">{goal.name}</h3>
-                    </div>
-                    <Badge variant={isCompleted ? 'success' : pct > 50 ? 'primary' : 'warning'}>
-                      {isCompleted ? 'Achieved!' : `${pct}%`}
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-1 mb-4">
-                    <div className="flex items-baseline justify-between text-xs">
-                      <span className="font-mono text-lg font-bold text-[#242424]">
-                        ₹{goal.currentAmount.toLocaleString('en-IN')}
-                      </span>
-                      <span className="font-mono text-xs text-[#6B6B6B]">
-                        Target: ₹{goal.targetAmount.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-full h-2.5 bg-[#F0F0F0] rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isCompleted
-                            ? 'bg-[#218739]'
-                            : pct > 50
-                            ? 'bg-[#8B1E3F]'
-                            : 'bg-[#C88719]'
-                        }`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-[#FAFAFA] rounded-md text-xs space-y-1.5 border border-[#F0F0F0] mb-4">
-                    <div className="flex items-center justify-between text-[#6B6B6B]">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" /> Target Date:
-                      </span>
-                      <span className="font-mono font-semibold text-[#242424]">{goal.targetDate}</span>
+              return (
+                <Card
+                  key={goal.id}
+                  className="p-5 bg-white border border-[#E5E5E5] hover:border-[#8B1E3F] hover:shadow-cardHover transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div>
+                        <Badge variant="neutral">{goal.category || 'Personal Goal'}</Badge>
+                        <h3 className="text-base font-bold text-[#242424] mt-1.5">{goal.name}</h3>
+                      </div>
+                      <Badge variant={isCompleted ? 'success' : pct > 50 ? 'primary' : 'warning'}>
+                        {isCompleted ? 'Achieved!' : `${pct}%`}
+                      </Badge>
                     </div>
 
-                    {!isCompleted && (
-                      <div className="flex items-center justify-between text-[#6B6B6B]">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" /> Monthly Needed:
+                    <div className="space-y-1 mb-4">
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="font-mono text-lg font-bold text-[#242424]">
+                          ₹{goal.currentAmount.toLocaleString('en-IN')}
                         </span>
-                        <span className="font-mono font-bold text-[#8B1E3F]">
-                          ₹{monthlyRequired.toLocaleString('en-IN')}/mo
+                        <span className="font-mono text-xs text-[#6B6B6B]">
+                          Target: ₹{goal.targetAmount.toLocaleString('en-IN')}
                         </span>
                       </div>
-                    )}
-                  </div>
-                </div>
 
-                <div className="pt-2 border-t border-[#F0F0F0]">
-                  <Button
-                    variant={isCompleted ? 'outline' : 'primary'}
-                    size="sm"
-                    className="w-full"
-                    icon={<Plus className="w-4 h-4" />}
-                    onClick={() => openDepositModal(goal)}
-                  >
-                    {isCompleted ? 'Add Extra Funds' : 'Deposit Funds'}
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                      {/* Progress Bar */}
+                      <div className="w-full h-2.5 bg-[#F0F0F0] rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            isCompleted
+                              ? 'bg-[#218739]'
+                              : pct > 50
+                              ? 'bg-[#8B1E3F]'
+                              : 'bg-[#C88719]'
+                          }`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-[#FAFAFA] rounded-md text-xs space-y-1.5 border border-[#F0F0F0] mb-4">
+                      <div className="flex items-center justify-between text-[#6B6B6B]">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5" /> Target Date:
+                        </span>
+                        <span className="font-mono font-semibold text-[#242424]">{goal.targetDate}</span>
+                      </div>
+
+                      {!isCompleted && (
+                        <div className="flex items-center justify-between text-[#6B6B6B]">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5" /> Monthly Needed:
+                          </span>
+                          <span className="font-mono font-bold text-[#8B1E3F]">
+                            ₹{monthlyRequired.toLocaleString('en-IN')}/mo
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#F0F0F0]">
+                    <Button
+                      variant={isCompleted ? 'outline' : 'primary'}
+                      size="sm"
+                      className="w-full"
+                      icon={<Plus className="w-4 h-4" />}
+                      onClick={() => openDepositModal(goal)}
+                    >
+                      {isCompleted ? 'Add Extra Funds' : 'Deposit Funds'}
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Add New Goal Modal */}

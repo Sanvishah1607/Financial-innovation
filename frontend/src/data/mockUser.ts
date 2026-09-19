@@ -1,15 +1,15 @@
 import { UserProfile } from '../types';
 
 export const initialMockUser: UserProfile = {
-  id: 'usr_finguard_101',
-  fullName: 'Aarav Sharma',
-  email: 'aarav.sharma@finshield.in',
-  phone: '+91 98765 43210',
-  monthlyIncome: 45000,
+  id: 'usr_default',
+  fullName: 'FinShield User',
+  email: 'user@finshield.in',
+  phone: '+91 98765 00000',
+  monthlyIncome: 35000,
   currency: 'INR (₹)',
   accountNumberMasked: '•••• •••• •••• 4821',
   ifscCode: 'FSHD0001928',
   twoFactorEnabled: true,
-  financialGoals: ['Emergency Fund', 'New Laptop', 'Goa Trip'],
-  createdAt: '2026-01-15',
+  financialGoals: ['Emergency Fund'],
+  createdAt: new Date().toISOString(),
 };

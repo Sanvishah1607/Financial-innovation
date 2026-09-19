@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, User, Mail, Lock, DollarSign, ArrowRight } from 'lucide-react';
+import { ShieldCheck, User, Mail, Lock, DollarSign, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -13,12 +13,13 @@ import { registerUser, googleSignIn } from '../services/api';
 export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { updateUser } = useFinancial();
+  const { reloadUserData } = useFinancial();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [monthlyIncome, setMonthlyIncome] = useState('35000');
   const [currency, setCurrency] = useState('INR (₹)');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -30,7 +31,7 @@ export const SignUpPage: React.FC = () => {
   const validate = () => {
     const err: { [key: string]: string } = {};
     if (!fullName.trim()) err.fullName = 'Full Name is required';
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) err.email = 'Valid email is required';
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) err.email = 'Please enter a valid email address';
     if (!password || password.length < 6) err.password = 'Password must be at least 6 characters';
     if (password !== confirmPassword) err.confirmPassword = 'Passwords do not match';
     if (!agreedToTerms) err.terms = 'You must agree to the Terms & Conditions';
@@ -44,24 +45,17 @@ export const SignUpPage: React.FC = () => {
 
     setLoading(true);
     const result = await registerUser({
-      fullName,
-      email,
+      fullName: fullName.trim(),
+      email: email.trim(),
+      password,
       monthlyIncome: parseFloat(monthlyIncome) || 35000,
       currency,
-      password,
     });
     setLoading(false);
 
     if (result.success && result.user) {
-      const firstName = fullName.split(' ')[0] || 'User';
-      updateUser({
-        fullName,
-        firstName,
-        email,
-        monthlyIncome: parseFloat(monthlyIncome) || 35000,
-        currency,
-      });
-      showToast(`Welcome to FinShield, ${firstName}! Your account is ready.`, 'success');
+      reloadUserData();
+      showToast(`Welcome to FinShield, ${result.user.fullName}! Your account has been initialized.`, 'success');
       navigate('/dashboard');
     } else {
       showToast(result.error || 'Failed to create account.', 'error');
@@ -76,17 +70,8 @@ export const SignUpPage: React.FC = () => {
       setGoogleModalOpen(false);
 
       if (result.success && result.user) {
-        const firstName = result.user.fullName.split(' ')[0] || 'User';
-        updateUser({
-          fullName: result.user.fullName,
-          firstName,
-          email: result.user.email,
-          avatarUrl: result.user.avatarUrl,
-          authProvider: 'google',
-          monthlyIncome: parseFloat(monthlyIncome) || 35000,
-          currency,
-        });
-        showToast(`Welcome, ${firstName}! Signed up with Google.`, 'success');
+        reloadUserData();
+        showToast(`Welcome, ${result.user.fullName}! Signed in with Google.`, 'success');
         navigate('/dashboard');
       } else {
         showToast(result.error || 'Google authentication failed.', 'error');
@@ -108,12 +93,12 @@ export const SignUpPage: React.FC = () => {
           Create Your FinShield Account
         </h2>
         <p className="text-xs text-[#6B6B6B] mt-1">
-          Take full control of your personal finances with non-custodial safety
+          Take full control of your personal finances with non-custodial privacy
         </p>
       </div>
 
       <Card className="p-6 bg-white shadow-sm border border-[#E5E5E5]">
-        {/* Google One-Click Sign Up Button */}
+        {/* Google One-Click Sign Up */}
         <button
           type="button"
           onClick={() => setGoogleModalOpen(true)}
@@ -153,10 +138,11 @@ export const SignUpPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Dynamic Signup Form (Requirement 1: Full Name, Email Address, Password) */}
         <form onSubmit={handleSignUp} className="space-y-4">
           <Input
             label="Full Name"
-            placeholder="e.g. Aarav Sharma"
+            placeholder="Enter your full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             error={errors.fullName}
@@ -167,7 +153,7 @@ export const SignUpPage: React.FC = () => {
           <Input
             label="Email Address"
             type="email"
-            placeholder="e.g. aarav@university.edu"
+            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={errors.email}
@@ -176,20 +162,30 @@ export const SignUpPage: React.FC = () => {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <Input
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.password}
-              leftIcon={<Lock className="w-4 h-4 text-[#6B6B6B]" />}
-              required
-            />
+            <div className="relative">
+              <Input
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="At least 6 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={errors.password}
+                leftIcon={<Lock className="w-4 h-4 text-[#6B6B6B]" />}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-8 text-[#6B6B6B] hover:text-[#242424] p-1 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+
             <Input
               label="Confirm Password"
-              type="password"
-              placeholder="••••••••"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               error={errors.confirmPassword}
@@ -206,7 +202,7 @@ export const SignUpPage: React.FC = () => {
               value={monthlyIncome}
               onChange={(e) => setMonthlyIncome(e.target.value)}
               leftIcon={<DollarSign className="w-4 h-4 text-[#6B6B6B]" />}
-              helperText="Stipend, allowance or salary"
+              helperText="Stipend or monthly income"
             />
             <Select
               label="Preferred Currency"
@@ -240,10 +236,11 @@ export const SignUpPage: React.FC = () => {
           <Button
             type="submit"
             fullWidth
+            isLoading={loading}
             disabled={loading || googleLoading}
             icon={<ArrowRight className="w-4 h-4" />}
           >
-            {loading ? 'Setting up Profile...' : 'Create Account'}
+            {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
         </form>
 

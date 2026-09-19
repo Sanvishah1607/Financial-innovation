@@ -19,10 +19,11 @@ import Input from '../components/Input';
 import Select from '../components/Select';
 import Badge from '../components/Badge';
 import Modal from '../components/Modal';
+import EmptyState from '../components/EmptyState';
 import { Budget, TransactionCategory } from '../types';
 
 export const BudgetPage: React.FC = () => {
-  const { budgets, updateBudget, totalExpenses } = useFinancial();
+  const { budgets, addBudget, updateBudget, totalExpenses } = useFinancial();
   const { addToast } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +59,13 @@ export const BudgetPage: React.FC = () => {
       updateBudget(existing.id, amount);
       addToast('success', `Updated ${selectedCategory} budget to ₹${amount.toLocaleString('en-IN')}`);
     } else {
-      addToast('info', `Set budget for ${selectedCategory}`);
+      addBudget({
+        category: selectedCategory,
+        allocatedAmount: amount,
+        spentAmount: 0,
+        month: new Date().toISOString().slice(0, 7),
+      });
+      addToast('success', `Set ${selectedCategory} budget to ₹${amount.toLocaleString('en-IN')}`);
     }
 
     setIsModalOpen(false);
@@ -186,69 +193,84 @@ export const BudgetPage: React.FC = () => {
           <span className="text-xs text-[#6B6B6B]">Click any category to edit limit</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {budgets.map(b => {
-            const pct = Math.round((b.spentAmount / b.allocatedAmount) * 100);
-            const remaining = b.allocatedAmount - b.spentAmount;
-            const isExceeded = remaining < 0;
-            const isNearLimit = pct >= 80 && !isExceeded;
+        {budgets.length === 0 ? (
+          <div className="py-8">
+            <EmptyState
+              title="No Category Budgets Set"
+              description="You haven't configured any category spending limits yet. Set your first budget limit to begin tracking utilization."
+              actionLabel="Set Budget Limit"
+              onAction={() => {
+                setSelectedCategory('Food');
+                setNewAllocation('');
+                setIsModalOpen(true);
+              }}
+            />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {budgets.map((b) => {
+              const pct = b.allocatedAmount > 0 ? Math.round((b.spentAmount / b.allocatedAmount) * 100) : 0;
+              const remaining = b.allocatedAmount - b.spentAmount;
+              const isExceeded = remaining < 0;
+              const isNearLimit = pct >= 80 && !isExceeded;
 
-            return (
-              <Card
-                key={b.id}
-                onClick={() => openEditModal(b)}
-                className="p-4.5 bg-white hover:border-[#8B1E3F] transition-all cursor-pointer group"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-[#242424] group-hover:text-[#8B1E3F] transition-colors">
-                      {b.category}
+              return (
+                <Card
+                  key={b.id}
+                  onClick={() => openEditModal(b)}
+                  className="p-4.5 bg-white hover:border-[#8B1E3F] transition-all cursor-pointer group"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-[#242424] group-hover:text-[#8B1E3F] transition-colors">
+                        {b.category}
+                      </span>
+                    </div>
+                    <Badge
+                      variant={isExceeded ? 'danger' : isNearLimit ? 'warning' : 'success'}
+                    >
+                      {isExceeded ? 'Exceeded' : `${pct}%`}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-baseline justify-between text-xs mb-2">
+                    <span className="font-mono text-sm font-bold text-[#242424]">
+                      ₹{b.spentAmount.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[#6B6B6B] font-mono">
+                      Limit: ₹{b.allocatedAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  <Badge
-                    variant={isExceeded ? 'danger' : isNearLimit ? 'warning' : 'success'}
-                  >
-                    {isExceeded ? 'Exceeded' : `${pct}%`}
-                  </Badge>
-                </div>
 
-                <div className="flex items-baseline justify-between text-xs mb-2">
-                  <span className="font-mono text-sm font-bold text-[#242424]">
-                    ₹{b.spentAmount.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[#6B6B6B] font-mono">
-                    Limit: ₹{b.allocatedAmount.toLocaleString('en-IN')}
-                  </span>
-                </div>
+                  {/* Progress bar */}
+                  <div className="w-full h-2 bg-[#F0F0F0] rounded-full overflow-hidden mb-2.5">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        isExceeded
+                          ? 'bg-[#C62828]'
+                          : isNearLimit
+                          ? 'bg-[#C88719]'
+                          : 'bg-[#218739]'
+                      }`}
+                      style={{ width: `${Math.min(100, pct)}%` }}
+                    />
+                  </div>
 
-                {/* Progress bar */}
-                <div className="w-full h-2 bg-[#F0F0F0] rounded-full overflow-hidden mb-2.5">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      isExceeded
-                        ? 'bg-[#C62828]'
-                        : isNearLimit
-                        ? 'bg-[#C88719]'
-                        : 'bg-[#218739]'
-                    }`}
-                    style={{ width: `${Math.min(100, pct)}%` }}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className={isExceeded ? 'text-[#C62828] font-bold' : 'text-[#6B6B6B]'}>
-                    {isExceeded
-                      ? `Exceeded by ₹${Math.abs(remaining).toLocaleString('en-IN')}`
-                      : `₹${remaining.toLocaleString('en-IN')} remaining`}
-                  </span>
-                  <span className="text-[#8B1E3F] font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                    Edit <Sliders className="w-3 h-3" />
-                  </span>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className={isExceeded ? 'text-[#C62828] font-bold' : 'text-[#6B6B6B]'}>
+                      {isExceeded
+                        ? `Exceeded by ₹${Math.abs(remaining).toLocaleString('en-IN')}`
+                        : `₹${remaining.toLocaleString('en-IN')} remaining`}
+                    </span>
+                    <span className="text-[#8B1E3F] font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      Edit <Sliders className="w-3 h-3" />
+                    </span>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Edit / Add Budget Modal */}
