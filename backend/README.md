@@ -1,10 +1,10 @@
-# FinShield Backend — AI-Powered Financial Safety & Decision Intelligence Platform 🛡️
+# FinShield Backend — AI-Powered Financial Safety & Decision Intelligence Platform 
 
 Welcome to the **FinShield Backend** architecture! This platform is built using **Python 3**, **FastAPI**, **SQLAlchemy**, **Supabase PostgreSQL**, and **NVIDIA NIM (Llama 3.2)**, designed to be scalable, secure, modular, and beginner-friendly.
 
 ---
 
-## 🏛️ Architecture Overview
+## Architecture Overview
 
 The backend is built as a **Modular Monolith** designed for clear separation of concerns:
 
@@ -64,7 +64,7 @@ backend/
 
 ---
 
-## 🚀 Quickstart Guide
+##  Quickstart Guide
 
 ### 1. Activate Environment & Install Packages
 ```bash
@@ -121,7 +121,7 @@ Open **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)** to test all en
 
 ---
 
-## 🧪 Running Automated Tests
+##  Running Automated Tests
 
 Execute the 19 automated unit and integration tests:
 

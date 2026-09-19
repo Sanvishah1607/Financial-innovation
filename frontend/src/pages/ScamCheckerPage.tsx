@@ -275,7 +275,6 @@ export const ScamCheckerPage: React.FC = () => {
         <div className="lg:col-span-5">
           {result ? (
             <Card className="p-6 bg-white border border-[#E5E5E5] space-y-5">
-              {/* Verdict Header */}
               <div
                 className={`p-4 rounded-lg flex items-start gap-3.5 ${
                   result.riskLevel === 'HIGH RISK'

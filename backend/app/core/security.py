@@ -3,6 +3,7 @@
 
 import json
 import base64
+import uuid
 from typing import Optional, Dict, Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -34,6 +35,15 @@ def decode_unverified_jwt_payload(token: str) -> Optional[Dict[str, Any]]:
         return None
 
 
+def to_valid_uuid(val: str) -> str:
+    """Ensures that any user ID string conforms to the UUID format required by PostgreSQL."""
+    try:
+        uuid.UUID(str(val))
+        return str(val)
+    except (ValueError, AttributeError):
+        return str(uuid.uuid5(uuid.NAMESPACE_DNS, str(val)))
+
+
 def verify_supabase_token(token: str) -> Dict[str, Any]:
     """
     Verifies authentication token using Supabase Auth or claims validation.
@@ -41,10 +51,11 @@ def verify_supabase_token(token: str) -> Dict[str, Any]:
     """
     # 1. Check for development / testing bypass token (e.g. 'dev-user-<id>')
     if token.startswith("dev-user-") or token.startswith("test-user-"):
-        user_id = token.replace("dev-user-", "").replace("test-user-", "")
+        raw_id = token.replace("dev-user-", "").replace("test-user-", "")
+        clean_id = to_valid_uuid(raw_id or "dev-user-default")
         return {
-            "id": user_id if user_id else "dev-user-default",
-            "email": f"{user_id or 'dev'}@finshield.app",
+            "id": clean_id,
+            "email": f"{raw_id or 'dev'}@finguard.app",
             "role": "authenticated",
         }
 
@@ -87,6 +98,7 @@ def verify_supabase_token(token: str) -> Dict[str, Any]:
 
 def get_current_user_id(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    db: Session = Depends(get_db),
 ) -> str:
     """Dependency that returns the authenticated user's ID, raising 401 if unauthenticated."""
     if not credentials or not credentials.credentials:
@@ -96,7 +108,23 @@ def get_current_user_id(
             headers={"WWW-Authenticate": "Bearer"},
         )
     user_info = verify_supabase_token(credentials.credentials)
-    return str(user_info["id"])
+    user_id = str(user_info["id"])
+
+    # Ensure profile row exists in database to satisfy foreign key constraints
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            user = User(
+                id=user_id,
+                email=user_info.get("email", f"user-{user_id[:8]}@finguard.app"),
+                full_name="FinGuard User",
+            )
+            db.add(user)
+            db.commit()
+    except Exception:
+        db.rollback()
+
+    return user_id
 
 
 def get_current_user(
