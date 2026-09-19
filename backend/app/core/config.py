@@ -39,7 +39,6 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: Optional[str] = ""
     OPENAI_API_KEY: Optional[str] = ""
     
-    # JWT Security
     SECRET_KEY: str = "finshield-super-secret-jwt-key-2026"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 24 hours
