@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FinGuard</string>
+    <string name="title_activity_main">FinGuard</string>
+    <string name="package_name">com.finguard.app</string>
+    <string name="custom_url_scheme">com.finguard.app</string>
+</resources>
