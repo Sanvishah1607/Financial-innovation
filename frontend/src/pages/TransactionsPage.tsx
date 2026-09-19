@@ -8,7 +8,8 @@ import {
   ArrowUpRight,
   Download,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Camera
 } from 'lucide-react';
 import { useFinancial } from '../context/FinancialContext';
 import { useToast } from '../context/ToastContext';
@@ -136,7 +137,16 @@ export const TransactionsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <Link to="/receipt-scanner">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<Camera className="w-3.5 h-3.5 text-[#8B1E3F]" />}
+            >
+              Scan Receipt
+            </Button>
+          </Link>
           <Button
             variant="outline"
             size="sm"

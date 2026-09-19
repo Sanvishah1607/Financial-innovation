@@ -107,8 +107,16 @@ export interface EducationLesson {
   readTime: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Essential';
   summary: string;
+  objectives: string[];
+  videoUrl: string;
+  videoEmbedUrl: string;
+  videoTitle?: string;
+  videoSource?: string;
+  articleUrl?: string;
+  articleSource?: string;
   fullContent: string[];
   keyTakeaway: string;
+  recommendedTrigger?: 'high_spending' | 'low_savings' | 'high_debt' | 'general';
 }
 
 export interface Toast {
@@ -116,4 +124,23 @@ export interface Toast {
   type: 'success' | 'error' | 'warning' | 'info';
   message: string;
   duration?: number;
+}
+
+export interface ScannedReceiptItem {
+  name: string;
+  quantity?: number;
+  price?: number;
+}
+
+export interface ScannedReceipt {
+  merchantName?: string | null;
+  transactionDate?: string | null; // YYYY-MM-DD
+  totalAmount?: number | null;
+  currency?: string | null;
+  category?: TransactionCategory | null;
+  paymentMethod?: PaymentMethod | null;
+  items: ScannedReceiptItem[];
+  confidenceScore: number;
+  rawText?: string | null;
+  warnings: string[];
 }

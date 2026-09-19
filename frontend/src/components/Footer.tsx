@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
           <Link to="/scam-checker" className="hover:text-[#8B1E3F] transition-colors">
             Scam Checker
           </Link>
-          <Link to="/calculator" className="hover:text-[#8B1E3F] transition-colors">
+          <Link to="/calculators" className="hover:text-[#8B1E3F] transition-colors">
             Calculators
           </Link>
           <Link to="/settings" className="hover:text-[#8B1E3F] transition-colors">

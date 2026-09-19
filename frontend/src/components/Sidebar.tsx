@@ -14,7 +14,8 @@ import {
   Settings,
   ShieldCheck,
   Lock,
-  ChevronRight
+  ChevronRight,
+  Camera
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -33,7 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   ];
 
   const toolsNav = [
-    { to: '/calculator', label: 'Financial Calculator', icon: <Calculator className="w-4 h-4" /> },
+    { to: '/receipt-scanner', label: 'Receipt Scanner', icon: <Camera className="w-4 h-4" /> },
+    { to: '/calculators', label: 'Financial Calculators', icon: <Calculator className="w-4 h-4" /> },
     { to: '/scam-checker', label: 'Scam Checker', icon: <ShieldAlert className="w-4 h-4 text-[#8B1E3F]" />, badge: 'Shield' },
     { to: '/learn', label: 'Financial Learning', icon: <BookOpen className="w-4 h-4" /> },
   ];

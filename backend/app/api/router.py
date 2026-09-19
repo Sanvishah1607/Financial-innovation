@@ -13,6 +13,7 @@ from app.api.routes import (
     simulator,
     fraud,
     copilot,
+    receipts,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -28,3 +29,4 @@ api_router.include_router(intelligence.router, prefix="/intelligence", tags=["Fi
 api_router.include_router(simulator.router, prefix="/simulator", tags=["What-If Simulator"])
 api_router.include_router(fraud.router, prefix="/fraud", tags=["Scam Awareness Engine"])
 api_router.include_router(copilot.router, prefix="/copilot", tags=["AI Financial Copilot"])
+api_router.include_router(receipts.router, prefix="/receipts", tags=["Receipt Scanner"])

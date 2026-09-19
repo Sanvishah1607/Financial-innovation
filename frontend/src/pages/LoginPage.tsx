@@ -12,9 +12,8 @@ import { loginUser, googleSignIn } from '../services/api';
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { updateUser } = useFinancial();
+  const { reloadUserData } = useFinancial();
 
-  // Clean empty defaults (no prefilled dummy credentials)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -43,17 +42,12 @@ export const LoginPage: React.FC = () => {
     if (!validate()) return;
 
     setLoading(true);
-    const result = await loginUser(email, password);
+    const result = await loginUser(email.trim(), password);
     setLoading(false);
 
     if (result.success && result.user) {
-      const firstName = result.user.fullName.split(' ')[0] || 'User';
-      updateUser({
-        fullName: result.user.fullName,
-        email: result.user.email,
-        firstName,
-      });
-      showToast(`Welcome back, ${firstName}! Signed in successfully.`, 'success');
+      reloadUserData();
+      showToast(`Welcome back, ${result.user.fullName}! Signed in successfully.`, 'success');
       navigate('/dashboard');
     } else {
       showToast(result.error || 'Authentication failed. Please check your credentials.', 'error');
@@ -68,15 +62,8 @@ export const LoginPage: React.FC = () => {
       setGoogleModalOpen(false);
 
       if (result.success && result.user) {
-        const firstName = result.user.fullName.split(' ')[0] || 'User';
-        updateUser({
-          fullName: result.user.fullName,
-          firstName,
-          email: result.user.email,
-          avatarUrl: result.user.avatarUrl,
-          authProvider: 'google',
-        });
-        showToast(`Welcome, ${firstName}! Signed in with Google.`, 'success');
+        reloadUserData();
+        showToast(`Welcome, ${result.user.fullName}! Signed in with Google.`, 'success');
         navigate('/dashboard');
       } else {
         showToast(result.error || 'Google authentication failed.', 'error');
@@ -103,7 +90,7 @@ export const LoginPage: React.FC = () => {
       </div>
 
       <Card className="p-6 bg-white shadow-sm border border-[#E5E5E5]">
-        {/* Google One-Click Sign In Button */}
+        {/* Google One-Click Sign In */}
         <button
           type="button"
           onClick={() => setGoogleModalOpen(true)}
@@ -171,11 +158,7 @@ export const LoginPage: React.FC = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-8 text-[#6B6B6B] hover:text-[#242424] p-1 transition-colors"
             >
-              {showPassword ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
 
@@ -201,6 +184,7 @@ export const LoginPage: React.FC = () => {
           <Button
             type="submit"
             fullWidth
+            isLoading={loading}
             disabled={loading || googleLoading}
             icon={<ArrowRight className="w-4 h-4" />}
           >

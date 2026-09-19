@@ -18,7 +18,7 @@ export const MobileNav: React.FC = () => {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-[#E5E5E5] px-2 py-1.5 shadow-[0_-2px_6px_rgba(0,0,0,0.03)] flex items-center justify-around">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-[#E5E5E5] px-2 py-1.5 capacitor-bottom-safe shadow-[0_-2px_6px_rgba(0,0,0,0.03)] flex items-center justify-around">
       {items.map((item) => (
         <NavLink
           key={item.to}

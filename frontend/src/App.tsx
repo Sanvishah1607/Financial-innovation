@@ -21,13 +21,26 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import CalculatorPage from './pages/CalculatorPage';
 import ScamCheckerPage from './pages/ScamCheckerPage';
 import LearnPage from './pages/LearnPage';
+import ReceiptScannerPage from './pages/ReceiptScannerPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 export const App: React.FC = () => {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* Public Pages */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
@@ -45,6 +58,8 @@ export const App: React.FC = () => {
         <Route path="/savings" element={<SavingsPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/calculators" element={<CalculatorPage />} />
+        <Route path="/calculator" element={<CalculatorPage />} />
+        <Route path="/receipt-scanner" element={<ReceiptScannerPage />} />
         <Route path="/scam-checker" element={<ScamCheckerPage />} />
         <Route path="/learn" element={<LearnPage />} />
         <Route path="/profile" element={<ProfilePage />} />
@@ -54,6 +69,7 @@ export const App: React.FC = () => {
       {/* 404 Catch-all */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 };
 

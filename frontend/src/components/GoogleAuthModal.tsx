@@ -24,9 +24,9 @@ const DEFAULT_ACCOUNTS: GoogleAccountOption[] = [
     avatar: 'https://ui-avatars.com/api/?name=Neev+Shah&background=1E88E5&color=fff',
   },
   {
-    name: 'Aarav Sharma',
-    email: 'aarav.sharma@gmail.com',
-    avatar: 'https://ui-avatars.com/api/?name=Aarav+Sharma&background=8B1E3F&color=fff',
+    name: 'Priya Patel',
+    email: 'priya.patel@gmail.com',
+    avatar: 'https://ui-avatars.com/api/?name=Priya+Patel&background=8B1E3F&color=fff',
   },
 ];
 

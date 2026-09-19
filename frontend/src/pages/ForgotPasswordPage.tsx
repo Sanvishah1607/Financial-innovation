@@ -66,7 +66,7 @@ export const ForgotPasswordPage: React.FC = () => {
             <Input
               label="Registered Email"
               type="email"
-              placeholder="e.g. aarav@university.edu"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={error}

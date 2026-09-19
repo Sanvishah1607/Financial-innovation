@@ -20,11 +20,19 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
-  const { user, currentBalance } = useFinancial();
+  const { user, currentBalance, logout } = useFinancial();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const initials = user.fullName
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'U';
 
   const notifications = [
     {
@@ -171,13 +179,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
             className="flex items-center gap-2 p-1.5 rounded-md hover:bg-[#F7F7F8] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[#8B1E3F] text-white flex items-center justify-center font-bold text-xs">
-              {user.fullName.charAt(0)}
+              {initials}
             </div>
             <div className="hidden xl:block text-left">
               <div className="text-xs font-bold text-[#242424] leading-tight">
                 {user.fullName}
               </div>
-              <div className="text-[10px] text-[#6B6B6B]">Student Account</div>
+              <div className="text-[10px] text-[#6B6B6B]">Member Account</div>
             </div>
           </button>
 
@@ -212,14 +220,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                 Help & Learning
               </Link>
               <div className="border-t border-[#F0F0F0] my-1"></div>
-              <Link
-                to="/"
-                onClick={() => setShowUserMenu(false)}
-                className="flex items-center gap-2 px-3.5 py-2 hover:bg-[#FCE8E8] text-[#C62828] font-semibold"
+              <button
+                type="button"
+                onClick={() => {
+                  setShowUserMenu(false);
+                  logout();
+                  navigate('/login');
+                }}
+                className="w-full flex items-center gap-2 px-3.5 py-2 hover:bg-[#FCE8E8] text-[#C62828] font-semibold text-left transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 Sign Out
-              </Link>
+              </button>
             </div>
           )}
         </div>

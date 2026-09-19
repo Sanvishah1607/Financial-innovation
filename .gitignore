@@ -47,3 +47,11 @@ pnpm-debug.log*
 *.zip
 *.db
 *.sqlite3
+
+# Native Mobile & Desktop Applications (Excluded for Vercel Web Deployment)
+frontend/android/
+frontend/ios/
+frontend/electron/
+frontend/capacitor.config.ts
+run_apps.sh
+docs/MOBILE_AND_DESKTOP_GUIDE.md

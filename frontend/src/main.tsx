@@ -5,6 +5,11 @@ import App from './App';
 import { ToastProvider } from './context/ToastContext';
 import { FinancialProvider } from './context/FinancialContext';
 import './styles/index.css';
+import { Capacitor } from '@capacitor/core';
+
+if (Capacitor.isNativePlatform()) {
+  document.documentElement.classList.add('is-capacitor');
+}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

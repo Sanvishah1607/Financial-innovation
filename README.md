@@ -4,7 +4,7 @@
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -18,7 +18,7 @@
 
 ---
 
-## 📁 Project Structure Overview
+##  Project Structure Overview
 
 ```text
 FinGuard/
